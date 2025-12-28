@@ -1,43 +1,34 @@
 export default (context) => {
-    console.log("[LiteLiquid] v2.0 - Radiant Engine");
-
-    const updateBackground = () => {
-        // MÉTODO DE RADIANT LYRICS PARA ENCONTRAR LA PORTADA
-        // Intentamos encontrar la imagen de alta calidad donde ellos la buscan
+    console.log("[LiteLiquid] Iniciado.");
+    
+    // Inyectar estructura de capas
+    const createLayers = () => {
+        if (!document.getElementById('lite-bg-container')) {
+            const c = document.createElement('div');
+            c.id = 'lite-bg-container'; c.className = 'lite-bg-container';
+            c.innerHTML = `<div class="lite-bg-black"></div><div class="lite-bg-image"></div><div class="lite-bg-gradient"></div>`;
+            document.body.appendChild(c);
+        }
+    };
+    
+    // Buscar portada (usando selectores de Radiant Lyrics)
+    const updateBg = () => {
         const img = document.querySelector('figure[class*="_albumImage"] img') || 
-                    document.querySelector('[data-test="cover-image"]') ||
-                    document.querySelector('img[src*="resources"]');
-        
-        let src = "";
-        if (img) {
-            src = img.src || img.currentSrc;
-            // Truco de Radiant: Forzar alta resolución si es posible
-            if(src) src = src.replace(/\d+x\d+/, "1280x1280"); 
-        }
-
-        if(src) {
-            document.documentElement.style.setProperty('--lite-bg-img', `url(${src})`);
+                    document.querySelector('[data-test="cover-image"]');
+        if (img && img.src) {
+            const src = img.src.replace(/\d+x\d+/, "1280x1280");
+            const el = document.querySelector('.lite-bg-image');
+            if (el) el.style.backgroundImage = `url(${src})`;
         }
     };
-
-    // Observador optimizado
-    const observer = new MutationObserver((mutations) => {
-        updateBackground();
-    });
-
+    
+    const obs = new MutationObserver(updateBg);
     const init = () => {
-        const mainContainer = document.querySelector('[data-test="now-playing-page"]') || document.body;
-        // Observamos cambios en el árbol para atrapar cuando cambia la canción
-        observer.observe(mainContainer, { childList: true, subtree: true });
-        
-        // Ejecución inicial y loop de seguridad (polling lento)
-        updateBackground();
-        setInterval(updateBackground, 1000); 
+        createLayers();
+        const container = document.querySelector('[data-test="now-playing-page"]') || document.body;
+        obs.observe(container, { childList: true, subtree: true });
+        updateBg(); setInterval(updateBg, 2000);
     };
-
     init();
-
-    return () => {
-        observer.disconnect();
-    };
+    return () => { obs.disconnect(); document.getElementById('lite-bg-container')?.remove(); };
 };
