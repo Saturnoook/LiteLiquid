@@ -1,0 +1,55 @@
+:root { --lite-bg-img: none; }
+
+/* Ocultar Barra de Título Fea */
+#wco-drag-region span, .window-title, [class*="WindowTitle"] { display: none !important; }
+
+/* 1. Fondo Estático (Cero Animación = Cero GPU) */
+[data-test="now-playing-page"]::before, [class*="nowPlayingPage"]::before {
+    content: "";
+    position: absolute;
+    inset: -50px;
+    background-image: var(--lite-bg-img);
+    background-size: cover;
+    background-position: center;
+    filter: blur(60px) brightness(0.4) saturate(1.4);
+    opacity: 1;
+    z-index: 0;
+    pointer-events: none;
+    will-change: transform; /* Aceleración Hardware */
+}
+
+/* Limpiar fondos nativos */
+[data-test="now-playing-page"] > div, [class*="_lyricsColumn"] { background: transparent !important; }
+
+/* 2. Letras Base (Apagadas) */
+[class*="_lyricsText"] span, [class*="lyric-line"] {
+    color: rgba(255, 255, 255, 0.3) !important;
+    text-shadow: none !important;
+    font-size: 42px !important;
+    font-weight: 700 !important;
+    transition: all 0.4s ease;
+    opacity: 0.5;
+    transform-origin: left center;
+}
+
+/* 3. EL GLOW (Activado por JS) */
+.lite-glow {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 1),
+        0 0 30px rgba(255, 255, 255, 0.8),
+        0 0 50px rgba(255, 255, 255, 0.4) !important;
+    transform: scale(1.08) translateX(20px);
+}
+
+/* 4. Footer Player Invisible */
+[data-test="footer-player"] {
+    background: rgba(10, 10, 15, 0.2) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 20px !important;
+    margin: 15px;
+    width: calc(100% - 30px);
+    box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+}
