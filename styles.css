@@ -1,11 +1,9 @@
-/* LITE LIQUID: GPU OPTIMIZED STYLE */
-
 :root { --lite-bg-img: none; }
 
 /* Ocultar elementos molestos */
 #wco-drag-region span, .window-title, [class*="WindowTitle"] { display: none !important; }
 
-/* 1. FONDO LIQUID GLASS (Estático = 0% GPU) */
+/* 1. FONDO LIQUID (Estático = 0% GPU) */
 [data-test="now-playing-page"]::before, [class*="nowPlayingPage"]::before {
     content: "";
     position: absolute;
@@ -13,7 +11,6 @@
     background-image: var(--lite-bg-img);
     background-size: cover;
     background-position: center;
-    /* Blur estático eficiente */
     filter: blur(60px) brightness(0.4) saturate(1.4);
     opacity: 1;
     z-index: 0;
@@ -27,38 +24,47 @@
     background: transparent !important; 
 }
 
-/* 2. LETRAS INACTIVAS */
-/* Corregido: Agregado el '> div >' que faltaba */
+/* 2. LETRAS (Estructura Corregida según Radiant Lyrics) */
+
+/* Texto Inactivo */
 [class*="_lyricsText"] > div > span,
 [class*="lyric-line"] {
     color: rgba(255, 255, 255, 0.35) !important;
     text-shadow: none !important;
-    font-size: 42px !important;
+    font-size: 42px !important; /* Tamaño Radiant */
     font-weight: 700 !important;
+    font-family: "AbyssFont", system-ui, sans-serif !important; /* Intentar usar fuente bonita */
     transition: all 0.4s ease;
     opacity: 0.5;
     transform-origin: left center;
 }
 
-/* 3. EL GLOW (Basado en Radiant Lyrics) */
-/* Usamos el atributo nativo data-current="true" */
+/* 3. GLOW ACTIVO (Selector Exacto de Radiant) */
+/* Usamos [data-current="true"] dentro del div intermedio */
 
 [class*="_lyricsText"] > div > span[data-current="true"],
 .lite-glow {
     color: #ffffff !important;
     opacity: 1 !important;
     
-    /* El Glow Eye Candy */
+    /* El Glow Idéntico a Radiant Lyrics */
     text-shadow: 
         0 0 10px rgba(255, 255, 255, 1),
-        0 0 25px rgba(255, 255, 255, 0.8),
-        0 0 50px rgba(255, 255, 255, 0.4) !important;
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.4) !important;
         
-    transform: scale(1.08) translateX(20px);
+    transform: scale(1.05) translateX(20px);
     padding-left: 20px;
 }
 
-/* 4. FOOTER PLAYER INVISIBLE */
+/* Hover Effect */
+[class*="_lyricsText"] > div > span:hover {
+    color: white !important;
+    text-shadow: 0 0 15px white !important;
+    opacity: 1 !important;
+}
+
+/* 4. FOOTER PLAYER */
 [data-test="footer-player"] {
     background: rgba(10, 10, 15, 0.2) !important;
     backdrop-filter: blur(20px) !important;
