@@ -1,63 +1,43 @@
 export default (context) => {
-    const OBSERVER_CONFIG = { attributes: true, subtree: true, attributeFilter: ['class', 'data-active', 'style'] };
-    
-    // Selectores para Tidal Beta
-    const LYRICS_CONTAINER_SELECTOR = '[class*="_lyricsColumn"]'; 
-    
-    let lyricsObserver = null;
+    console.log("[LiteLiquid] v2.0 - Radiant Engine");
 
-    // Esta función solo corre cuando la letra cambia (Eficiencia Máxima)
-    const handleMutations = (mutationsList) => {
-        for (const mutation of mutationsList) {
-            const target = mutation.target;
-            if (!target || !target.classList) return;
+    const updateBackground = () => {
+        // MÉTODO DE RADIANT LYRICS PARA ENCONTRAR LA PORTADA
+        // Intentamos encontrar la imagen de alta calidad donde ellos la buscan
+        const img = document.querySelector('figure[class*="_albumImage"] img') || 
+                    document.querySelector('[data-test="cover-image"]') ||
+                    document.querySelector('img[src*="resources"]');
+        
+        let src = "";
+        if (img) {
+            src = img.src || img.currentSrc;
+            // Truco de Radiant: Forzar alta resolución si es posible
+            if(src) src = src.replace(/\d+x\d+/, "1280x1280"); 
+        }
 
-            // Detectar si Tidal dice que esta línea es la activa
-            // Buscamos: Clase 'active', atributo data-active, o color blanco
-            const isActive = 
-                target.classList.toString().toLowerCase().includes('active') || 
-                target.getAttribute('data-active') === 'true' ||
-                target.getAttribute('aria-current') === 'true' ||
-                (target.style && (target.style.color === 'white' || target.style.color === 'rgb(255, 255, 255)'));
-
-            if (isActive) {
-                // Borrar brillo anterior
-                document.querySelectorAll('.lite-glow').forEach(el => el.classList.remove('lite-glow'));
-                // Poner brillo nuevo
-                target.classList.add('lite-glow');
-            }
+        if(src) {
+            document.documentElement.style.setProperty('--lite-bg-img', `url(${src})`);
         }
     };
+
+    // Observador optimizado
+    const observer = new MutationObserver((mutations) => {
+        updateBackground();
+    });
 
     const init = () => {
-        const lyricsContainer = document.querySelector(LYRICS_CONTAINER_SELECTOR);
-        if (!lyricsContainer) {
-            setTimeout(init, 1000); // Reintentar si aún no carga
-            return;
-        }
-
-        console.log("[LiteLiquid] Optimización de GPU activada.");
+        const mainContainer = document.querySelector('[data-test="now-playing-page"]') || document.body;
+        // Observamos cambios en el árbol para atrapar cuando cambia la canción
+        observer.observe(mainContainer, { childList: true, subtree: true });
         
-        // Inyectar fondo estático para evitar repintado
+        // Ejecución inicial y loop de seguridad (polling lento)
         updateBackground();
-
-        // Iniciar el vigilante
-        lyricsObserver = new MutationObserver(handleMutations);
-        lyricsObserver.observe(lyricsContainer, OBSERVER_CONFIG);
-    };
-    
-    const updateBackground = () => {
-        // Buscar la portada en alta calidad
-        const img = document.querySelector('[data-test="cover-image"]') || document.querySelector('img[src*="resources"]');
-        if(img) {
-            document.documentElement.style.setProperty('--lite-bg-img', `url(${img.src})`);
-        }
-        setTimeout(updateBackground, 3000); // Revisar cada 3s por si cambia la canción
+        setInterval(updateBackground, 1000); 
     };
 
-    init(); // Arrancar
+    init();
 
     return () => {
-        if (lyricsObserver) lyricsObserver.disconnect();
+        observer.disconnect();
     };
 };
