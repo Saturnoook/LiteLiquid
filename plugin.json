@@ -1,0 +1,8 @@
+{
+  "name": "LiteLiquid",
+  "description": "Lyrics optimizadas con efecto Liquid Glass y 0% uso de GPU.",
+  "author": "TuUsuario",
+  "version": "1.0.0",
+  "injectStyles": ["styles.css"],
+  "main": "index.js"
+}
