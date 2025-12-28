@@ -1,76 +1,50 @@
 :root { --lite-bg-img: none; }
-
-/* Ocultar elementos molestos */
 #wco-drag-region span, .window-title, [class*="WindowTitle"] { display: none !important; }
 
-/* 1. FONDO LIQUID (Estático = 0% GPU) */
-[data-test="now-playing-page"]::before, [class*="nowPlayingPage"]::before {
-    content: "";
-    position: absolute;
-    inset: -50px;
-    background-image: var(--lite-bg-img);
-    background-size: cover;
-    background-position: center;
-    filter: blur(60px) brightness(0.4) saturate(1.4);
-    opacity: 1;
-    z-index: 0;
-    pointer-events: none;
-    will-change: transform; 
+/* --- ESTRUCTURA DE FONDO (Igual a Radiant Lyrics) --- */
+.lite-bg-container {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -10; pointer-events: none; overflow: hidden;
+}
+/* Capa Negra Base */
+.lite-bg-black { position: absolute; inset: 0; background: #000; z-index: 1; }
+/* Capa Imagen con Blur */
+.lite-bg-image {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    filter: blur(60px) brightness(0.5) saturate(1.4);
+    transform: scale(1.1); z-index: 2; 
+    transition: background-image 0.5s ease;
+}
+/* Capa Gradiente (Viñeta) */
+.lite-bg-gradient {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.8) 90%);
+    z-index: 3;
 }
 
-/* Limpieza de fondos nativos */
-[data-test="now-playing-page"] > div, 
-[class*="_lyricsColumn"] { 
+/* Limpieza de Tidal */
+[data-test="now-playing-page"], [data-test="now-playing-page"] > div, [class*="_lyricsColumn"] { 
     background: transparent !important; 
 }
 
-/* 2. LETRAS (Estructura Corregida según Radiant Lyrics) */
-
-/* Texto Inactivo */
-[class*="_lyricsText"] > div > span,
-[class*="lyric-line"] {
-    color: rgba(255, 255, 255, 0.35) !important;
-    text-shadow: none !important;
-    font-size: 42px !important; /* Tamaño Radiant */
-    font-weight: 700 !important;
-    font-family: "AbyssFont", system-ui, sans-serif !important; /* Intentar usar fuente bonita */
-    transition: all 0.4s ease;
-    opacity: 0.5;
-    transform-origin: left center;
+/* --- GLOW Y LETRAS --- */
+[class*="_lyricsText"] > div > span, [class*="lyric-line"] {
+    color: rgba(255, 255, 255, 0.35) !important; text-shadow: none !important;
+    font-size: 42px !important; font-weight: 700 !important;
+    transition: all 0.4s ease; opacity: 0.5;
 }
 
-/* 3. GLOW ACTIVO (Selector Exacto de Radiant) */
-/* Usamos [data-current="true"] dentro del div intermedio */
-
-[class*="_lyricsText"] > div > span[data-current="true"],
-.lite-glow {
-    color: #ffffff !important;
-    opacity: 1 !important;
-    
-    /* El Glow Idéntico a Radiant Lyrics */
-    text-shadow: 
-        0 0 10px rgba(255, 255, 255, 1),
-        0 0 20px rgba(255, 255, 255, 0.8),
-        0 0 40px rgba(255, 255, 255, 0.4) !important;
-        
-    transform: scale(1.05) translateX(20px);
-    padding-left: 20px;
+/* Selector corregido basado en tu Radiant Lyrics subido */
+[class*="_lyricsText"] > div > span[data-current="true"], .lite-glow {
+    color: #fff !important; opacity: 1 !important;
+    text-shadow: 0 0 10px #fff, 0 0 25px rgba(255,255,255,0.8), 0 0 50px rgba(255,255,255,0.4) !important;
+    transform: scale(1.05) translateX(20px); padding-left: 20px;
 }
 
-/* Hover Effect */
-[class*="_lyricsText"] > div > span:hover {
-    color: white !important;
-    text-shadow: 0 0 15px white !important;
-    opacity: 1 !important;
-}
-
-/* 4. FOOTER PLAYER */
+/* Footer Invisible */
 [data-test="footer-player"] {
-    background: rgba(10, 10, 15, 0.2) !important;
-    backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 20px !important;
-    margin: 15px;
-    width: calc(100% - 30px);
-    box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+    background: rgba(10, 10, 15, 0.2) !important; backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255,255,255,0.05); border-radius: 20px !important;
+    margin: 15px; width: calc(100% - 30px);
 }
