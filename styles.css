@@ -1,9 +1,11 @@
+/* LITE LIQUID: GPU OPTIMIZED STYLE */
+
 :root { --lite-bg-img: none; }
 
-/* Ocultar Barra de Título Fea */
+/* Ocultar elementos molestos */
 #wco-drag-region span, .window-title, [class*="WindowTitle"] { display: none !important; }
 
-/* 1. Fondo Estático (Cero Animación = Cero GPU) */
+/* 1. FONDO LIQUID GLASS (Estático = 0% GPU) */
 [data-test="now-playing-page"]::before, [class*="nowPlayingPage"]::before {
     content: "";
     position: absolute;
@@ -11,19 +13,25 @@
     background-image: var(--lite-bg-img);
     background-size: cover;
     background-position: center;
+    /* Blur estático eficiente */
     filter: blur(60px) brightness(0.4) saturate(1.4);
     opacity: 1;
     z-index: 0;
     pointer-events: none;
-    will-change: transform; /* Aceleración Hardware */
+    will-change: transform; 
 }
 
-/* Limpiar fondos nativos */
-[data-test="now-playing-page"] > div, [class*="_lyricsColumn"] { background: transparent !important; }
+/* Limpieza de fondos nativos */
+[data-test="now-playing-page"] > div, 
+[class*="_lyricsColumn"] { 
+    background: transparent !important; 
+}
 
-/* 2. Letras Base (Apagadas) */
-[class*="_lyricsText"] span, [class*="lyric-line"] {
-    color: rgba(255, 255, 255, 0.3) !important;
+/* 2. LETRAS INACTIVAS */
+/* Corregido: Agregado el '> div >' que faltaba */
+[class*="_lyricsText"] > div > span,
+[class*="lyric-line"] {
+    color: rgba(255, 255, 255, 0.35) !important;
     text-shadow: none !important;
     font-size: 42px !important;
     font-weight: 700 !important;
@@ -32,18 +40,25 @@
     transform-origin: left center;
 }
 
-/* 3. EL GLOW (Activado por JS) */
+/* 3. EL GLOW (Basado en Radiant Lyrics) */
+/* Usamos el atributo nativo data-current="true" */
+
+[class*="_lyricsText"] > div > span[data-current="true"],
 .lite-glow {
     color: #ffffff !important;
     opacity: 1 !important;
+    
+    /* El Glow Eye Candy */
     text-shadow: 
         0 0 10px rgba(255, 255, 255, 1),
-        0 0 30px rgba(255, 255, 255, 0.8),
+        0 0 25px rgba(255, 255, 255, 0.8),
         0 0 50px rgba(255, 255, 255, 0.4) !important;
+        
     transform: scale(1.08) translateX(20px);
+    padding-left: 20px;
 }
 
-/* 4. Footer Player Invisible */
+/* 4. FOOTER PLAYER INVISIBLE */
 [data-test="footer-player"] {
     background: rgba(10, 10, 15, 0.2) !important;
     backdrop-filter: blur(20px) !important;
