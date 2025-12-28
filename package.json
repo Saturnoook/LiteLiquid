@@ -1,8 +1,11 @@
 {
   "name": "LiteLiquid",
-  "description": "Lyrics optimizadas con efecto Liquid Glass y 0% uso de GPU.",
-  "author": "TuUsuario",
+  "description": "Lyrics con efecto Liquid Glass optimizado.",
   "version": "1.0.0",
+  "main": "index.js",
   "injectStyles": ["styles.css"],
-  "main": "index.js"
+  "author": "Saturnoook",
+  "neptune": {
+    "plainId": "lite-liquid-glass"
+  }
 }
